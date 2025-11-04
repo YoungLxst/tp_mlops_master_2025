@@ -1,0 +1,7 @@
+conda
+pandas
+scikit-learn
+numpy
+spacy
+torch
+tqdm
