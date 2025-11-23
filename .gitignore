@@ -1,2 +1,4 @@
 data/
 trained/
+artifacts
+mlflow.db
