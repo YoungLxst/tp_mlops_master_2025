@@ -7,6 +7,7 @@ import random
 import string
 import os
 from tqdm import tqdm
+import numpy as np
 
 class PolarityNN(nn.Module):
     """
@@ -46,10 +47,43 @@ class PolarityNN(nn.Module):
         with torch.no_grad():
             probs = self.forward(x)
             return (probs > 0.5).float()
+        
+    def score(self, _, val_loader):
+        total = []
+        
+        with torch.no_grad():
+            for batch_x, batch_y in val_loader:
+                outputs = self(batch_x)
+
+                predicted = (outputs > 0.5).float()
+                correct = np.mean(predicted.view(-1) == batch_y)
+                total.append(correct)
+
+        return np.mean(total)
             
-    def train_polarityNN(self, train_loader, val_loader, num_epochs=10, learning_rate=0.001):
-        criterion = nn.BCELoss()
-        optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate)
+    def fit(self, train_loader, val_loader, num_epochs:int=10, learning_rate:float=0.001, 
+                         optimizer:str="adam", criterion:str="bceloss",optim_params=None, criterion_params=None):
+        
+        methode_criterion={
+            "bceloss":nn.BCELoss,
+            "mseloss":nn.MSELoss,
+            "l1loss":nn.L1Loss,
+            "crossentropyloss":nn.CrossEntropyLoss
+        }
+        if criterion not in methode_criterion:
+            criterion=methode_criterion["bceloss"]()
+        else:
+            criterion = methode_criterion[criterion](**criterion_params)
+
+        methode_optimizer={
+            "adam":opt.Adam,
+            "adamax":opt.Adamax,
+            "sgd":opt.SGD
+        }
+        if optimizer not in methode_optimizer:
+            optimizer = opt.Adam(self.parameters(), lr=learning_rate)
+        else:
+            optimizer = methode_optimizer[optimizer](self.parameters(), lr=learning_rate, **optim_params)
         
         train_losses = []
         val_losses = []
