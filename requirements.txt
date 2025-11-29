@@ -1,7 +1,9 @@
 pandas
+polars
 scikit-learn
 numpy
 spacy
+scipy
 torch
 tqdm
 mlflow
