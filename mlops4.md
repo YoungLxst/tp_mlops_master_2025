@@ -69,7 +69,7 @@ Pour lancer le server, executez:
 uvicorn app:app --host 0.0.0.0
 ```
 
-Pour tester votre code, vous pouvez accéder à sa doc qui est automatiquement accessible à l'adresse suivante: `http://localhost:8000`
+Pour tester votre code, vous pouvez accéder à sa doc qui est automatiquement accessible à l'adresse suivante: `http://localhost:8000/docs`
 La documentation vous permet de tester directement les endpoints via le bouton "try it out".
 
 ### Documentation
