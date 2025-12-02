@@ -101,7 +101,7 @@ Le Dockerfile doit implémenter les étapes suivantes:
 - Choisir un repertoire de travail dans le conteneur, par exemple `/webapp`
 - Installer les packages requis, hors modèle: `mlflow`, `fastapi`, `uvicorn`.
 - Copier les fichiers source requis.
-- Executer le script du récupération du modèle `get_mlflow_model.py` depuis votre server MLFlow. Ce script utilisera des arguments de compilation MLFLOW_SERVER_URI, MODEL_NAME et MODEL_VERSION. Le modèle sera installé dans un repertoire local du conteneur, par exemple `/model`
+- Executer le script `get_mlflow_model.py` pour récupérer le modèle depuis le server MLFlow et le stocker dans votre conteneur, par exemple dans le répertoire `/model`. Ce script utilisera des arguments de compilation MLFLOW_SERVER_URI, MODEL_NAME et MODEL_VERSION. 
 - Installer les requirements du modèles, qui se trouveront dans `/model/requirements.txt`
 - Exposer le port 8000, le port d'accès à votre Webapp
 - Executer la commande `uvicorn` de démarrage de votre Webapp.
@@ -119,7 +119,7 @@ Pour les <PARAMETER_N>, il s'agit des paramètres utilisés dans votre Dockerfil
 
 __Attention!__
 
-1. Les commandes executées dans le dockerfile le sont dans le conteneur qui a sa propre adresse réseau, elles n'ont pas directement accès à votre `localhost`. Pour l'adresse de votre server MLFlow, vous devez utilisez l'adresse du `host` et non `localhost`. Pour cela, vous pouvez utiliser l'adresse speciale `host.docker.internal`. Votre server MLFLow aura donc l'adresse `http://host.docker.internal:5000`
+1. Les commandes executées dans le dockerfile le sont dans le conteneur qui a sa propre adresse réseau, elles n'ont pas directement accès à votre `localhost`. Lors de l'execution du script `get_mlflow_model.py`, pour vous connecter au server MLFlow, vous devez utilisez l'adresse speciale `host.docker.internal`, qui pointe vers la machine hôte (votre PC) et non `localhost`. Votre server MLFLow aura donc l'adresse `http://host.docker.internal:5000`
 2. Dans certaines configurations réseau l'accès au MLFlow ne fonctionne pas depuis le conteneur Docker, c'est notamment le cas sur les PC de l'université. Dans ce cas, utilisez votre script `get_mlflow_model.py` pou récupérer votre modèle en local, par exemple dans `/tmp` et modifiez votre Dockerfile pour copier le modèle depuis cet emplacement local vers le conteneur plutôt que de le récupérer directement sur le server MLFlow.
 
 ### Execution de votre conteneur
